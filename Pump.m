@@ -19,10 +19,10 @@ classdef Pump < handle
     end
     methods
         function value = get.st2(obj)
-            obj.st1.h = CoolProp.PropsSI('H', 'T', obj.st1.T.v, 'P', ...
-                obj.st1.p, obj.st1.fluid);
-            obj.st1.s = CoolProp.PropsSI('S', 'T', obj.st1.T.v, 'P', ...
-                obj.st1.p, obj.st1.fluid);
+%             obj.st1.h = CoolProp.PropsSI('H', 'T', obj.st1.T.v, 'P', ...
+%                 obj.st1.p, obj.st1.fluid);
+%             obj.st1.s = CoolProp.PropsSI('S', 'T', obj.st1.T.v, 'P', ...
+%                 obj.st1.p, obj.st1.fluid);
             value = Stream;
             value.fluid = obj.st1.fluid;
             value.p = obj.p;

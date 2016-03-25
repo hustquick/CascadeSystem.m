@@ -18,28 +18,29 @@ dc = DishCollector;
     dc.airPipe = ap;
     dc.insLayer = il;
 
-guess1 = [1500; 400; 0.1] ;
+guess1 = [1500; 400; 0.1];
 options = optimset('Display','iter');
 [x1, fval1] = fsolve(@(x1)CalcDishCollector(x1, dc), ...
     guess1, options);
-%% Stirling Engine Array
-% Two kinds of connection orders of the Stirling engines are considered.
-q_m_1 = Q_m(2.990);  % To be calculated!
-q_m_2 = Q_m(5.625);  % To be calculated;
 
 st1(3) = Stream;
-st2(11) = Stream;
+st1(1) = dc.st_o.converge(2.990 / dc.st_o.q_m.v);
+%% Stirling Engine Array
+% Two kinds of connection orders of the Stirling engines are considered.
+q_m_2 = Q_m(5.625);  % To be calculated;
 
-st1(1) = dc.st_o.converge(q_m_1.v / dc.st_o.q_m.v);
 st1(2) = st1(1).flow();
+
+st2(11) = Stream;
 
 st2(5).fluid = char(Const.Fluid(2));
 st2(5).T = Temperature(327.2);  % to be calculated
 st2(5).p = 1e6;
 st2(5).q_m = q_m_2; % to be calculated
 st2(6) = st2(5).flow();
+st2(6).p = st2(5).p;
 
-sea = SEA(10, 'Reverse');
+sea = SEA(10, 'Same');
     sea.st1_i = st1(1);
     sea.st1_o = st1(2);
     sea.st2_i = st2(5);
@@ -92,9 +93,16 @@ tb.y = 0.1;
 tb.calculate();
 st2(2) = tb.st2;    % Necessary for the stream has been diverged in the turbine
 st2(3) = tb.st3;    % Necessary for the stream has been diverged in the turbine
-%% Condensor
-% A condensor is created
-cd = Condensor;
+%% Condenser
+% A condenser is created
+cd = Condenser;
 cd.st1 = st2(2);
-cd.st2;
-%%
+st2(4) = cd.st2;
+%% Pump1
+% The pump btween Sitlring engine array and Condenser
+st2(4).fluid = char(Const.Fluid(2));
+pu1 = Pump;
+pu1.st1 = st2(4);
+pu1.p = 1e6;
+st2(5) = pu1.st2;
+

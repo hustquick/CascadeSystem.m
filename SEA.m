@@ -99,7 +99,7 @@ classdef SEA < handle
                     guess(j,1) = obj.se(1).st1_i.T.v - 30 * j;
                     guess(j,2) = obj.se(obj.n1).st2_i.T.v + ...
                         4 * (obj.n1 + 1 - j);
-                end
+                end               
             else
                 error('Uncomplished work.');
             end
@@ -117,6 +117,17 @@ classdef SEA < handle
             end
             obj.eta = sum(P) ./ (obj.st1_i_r.q_m.v * cp_1 * ...
                 (obj.se(1).st1_i.T.v - obj.se(obj.n1).st1_o.T.v));
+            obj.st1_o.T.v = obj.se(obj.n1).st1_o.T.v;
+            obj.st1_o.p = obj.se(obj.n1).st1_o.p;
+            if (strcmp(obj.order, 'Same'))
+                obj.st2_o.T.v = obj.se(obj.n1).st2_o.T.v;
+                obj.st2_o.p = obj.se(obj.n1).st2_o.p;
+            elseif (strcmp(obj.order,'Reverse'))
+                obj.st2_o.T.v = obj.se(1).st2_o.T.v;
+                obj.st2_o.p = obj.se(1).st2_o.p;
+            else
+                error('Uncomplished work.');
+            end
         end
     end
     methods

@@ -7,7 +7,9 @@ classdef Q_m < handle
     
     methods
         function obj = Q_m(v)
-            if nargin > 0
+            if nargin == 0
+                clear obj.v;
+            else
                 obj.v = v;
             end
         end
