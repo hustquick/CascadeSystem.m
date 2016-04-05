@@ -39,7 +39,7 @@ classdef StirlingEngine < handle
         end
         function T_R = T_R(obj)
             % Regenerator temperature, K
-            T_R = LogMean(obj.T_H(), obj.T_L());
+            T_R = Const.LogMean(obj.T_H(), obj.T_L());
         end
         function e = e(obj)
             % Regeneration effectiveness of the Stirling engine

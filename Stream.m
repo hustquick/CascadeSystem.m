@@ -19,10 +19,9 @@ classdef Stream < handle
             obj.T = Temperature;
             obj.q_m = Q_m;
         end
-        function st = flow(obj)
+        function flow(obj, st)
             % st2 is another state of the same stream st1 after a flow
             % process
-            st = Stream;
             st.fluid = obj.fluid;
             st.q_m = obj.q_m;
         end

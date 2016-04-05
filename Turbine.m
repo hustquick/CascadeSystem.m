@@ -32,8 +32,8 @@ classdef Turbine < handle
         end
     end
     methods
-        function st2 = flowInTurbine(obj, st1, p)
-            st2 = Stream;
+        function flowInTurbine(obj, st1, st2, p)
+%             st2 = Stream;
             st2.fluid = st1.fluid;
             st2.q_m = st1.q_m;
             st2.p = p;
@@ -50,23 +50,20 @@ classdef Turbine < handle
                     h2, st2.fluid);
             end
         end
-        function flow(obj)
-            st_tmp = obj.flowInTurbine(obj.st_i, obj.st_o_2.p);
+        function work(obj)
+            st_tmp = Stream;
+            obj.flowInTurbine(obj.st_i, st_tmp, obj.st_o_2.p);
             obj.y = (obj.st_i.q_m.v - obj.st_o_1.q_m.v) ./ ...
                 obj.st_i.q_m.v;
             if (obj.y >= 0 && obj.y <= 1)
-                obj.st_o_2 = st_tmp.diverge(obj.y);
+                obj.st_o_2.q_m.v = st_tmp.q_m.v .* obj.y;
                 st_tmp2 = st_tmp.diverge(1-obj.y);
-                obj.st_o_1 = obj.flowInTurbine(st_tmp2, obj.st_o_1.p);
+                obj.flowInTurbine(st_tmp2, obj.st_o_1, obj.st_o_1.p);
             else
                 error('Wrong extraction ratio y value given!');
             end
-        end
-                
-        function value = given_P(obj, ge)
-            value = ge.P ./ ge.eta;
-        end
-        
+        end            
+       
         function value = get.eta_i(obj)
             h_1_d = CoolProp.PropsSI('H', 'T', obj.T_s_d.v, 'P', ...
                 obj.p_s_d, obj.fluid_d);

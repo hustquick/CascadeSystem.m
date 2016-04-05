@@ -26,12 +26,6 @@ classdef CascadeSystem
             obj.st2(11) = Stream;
             obj.st3(4) = Stream;
         end
-        function calculate(obj)
-            guess = [6.672; 5.625];
-            options = optimset('Display','iter');
-            fsolve(@(x)CalcCascadeSystem(obj, x), ...
-                guess, options);
-        end
         function F = CalcCascadeSystem(obj, x)
             %CalcCascadeSystem Use expressions to calculation parameters of cascade
             %system

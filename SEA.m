@@ -46,7 +46,7 @@ classdef SEA < handle
             cp_1 = obj.st1_i.cp;
             cp_2 = obj.st2_i.cp;
             obj.se(1).st1_i = obj.st1_i_r;
-            obj.se(1).st1_o = obj.se(1).st1_i.flow();
+            obj.se(1).st1_i.flow(obj.se(1).st1_o);
             obj.se(1).st1_o.p = obj.se(1).st1_i.p;
             obj.se(1).cp_1 = cp_1;
             
@@ -80,16 +80,16 @@ classdef SEA < handle
                     obj.se(i).cp_2 = cp_2;
                 end
                 obj.se(obj.n1).st2_i = obj.st2_i_r;
-                obj.se(obj.n1).st2_o = obj.se(obj.n1).st2_i.flow();
+                obj.se(obj.n1).st2_i.flow(obj.se(obj.n1).st2_o);
                 obj.se(obj.n1).st2_o.p = obj.se(obj.n1).st2_i.p;
                 
                 for i = 1 : obj.n1-1
                     obj.se(i+1).st1_i = obj.se(i).st1_o;
                     obj.se(obj.n1-i).st2_i = obj.se(obj.n1+1-i).st2_o;
                     
-                    obj.se(i+1).st1_o = obj.se(i+1).st1_i.flow();
+                    obj.se(i+1).st1_i.flow(obj.se(i+1).st1_o);
                     obj.se(i+1).st1_o.p = obj.se(i+1).st1_i.p;
-                    obj.se(obj.n1-i).st2_o = obj.se(obj.n1-i).st2_i.flow();
+                    obj.se(obj.n1-i).st2_i.flow(obj.se(obj.n1-i).st2_o);
                     obj.se(obj.n1-i).st2_o.p = obj.se(obj.n1-i).st2_i.p;
                 end
                 
@@ -128,6 +128,7 @@ classdef SEA < handle
             end
             obj.eta = sum(P) ./ (obj.st1_i_r.q_m.v * cp_1 * ...
                 (obj.se(1).st1_i.T.v - obj.se(obj.n1).st1_o.T.v));
+            obj.st2_o.q_m = obj.st2_i.q_m;
         end
         function F = CalcSEA(x, sea)
             %CalcSEA Use expressions to calculate Temperatures of Stirling Engine Array
