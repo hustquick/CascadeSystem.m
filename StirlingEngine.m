@@ -10,6 +10,21 @@ classdef StirlingEngine < handle
         gamma = 3.375;  % Compression ratio of Stirling engine, ~\cite{Fraser2008}
         s_se = 20;  % Speed of Stirling engine, Hz (10Hz, 5kW)
         n_g = 4.158e-2; % Amount of working gas in each Stirling engine, mol
+        V_DH = 7.028e-5;    % Dead volume of heater, m^3
+        V_DC = 1.318e-5;     % Dead volume of cooler, m^3
+        V_DR = 5.055e-5;    % Dead volume of regenerator, m^3
+        S_E = 1.2082e-4;    % Swap volume of the expand space, m^3
+        S_C = 1.1413e-4;    % Swap volume of the compress space, m^3
+        C_E = 3.052e-5;     % Clearance volume of the expand space, m^3
+        C_C = 2.868e-5;     % Clearance volume fo the compress space, m^3
+%         n_g = 0.04171;        % Amount of working gas in each Stirling engine, mol
+        p = 2.76e6;         % Mean pressure, Pa
+        N_h = 40;           % Number of heater tubes
+        l_h = 0.2453;       % Average heater tube length, m
+        d_i_h = 0.00302;    % Heater internal diameter, m
+        N_l = 312;          % Number of cooler tubes
+        l_l = 0.0461;       % Average cooler tube length, m
+        d_i_l = 0.00109;    % Cooler internal diameter, m
         st1_i;   % Heating stream at inlet
         st1_o;   % Heating stream at outlet
         st2_i;   % Cooling stream at inlet
@@ -46,12 +61,27 @@ classdef StirlingEngine < handle
             e = (obj.T_R() - obj.T_L()) ...
                 ./ (obj.T_H() - obj.T_L());
         end
+        function gamma_h = gamma_h(obj)            
+            V_E = obj.S_E + obj.C_E;
+            V_C = obj.S_C + obj.C_C;
+            k_hl = obj.V_DH ./ obj.T_H + obj.V_DR ./ obj.T_R + obj.V_DC ./ obj.T_L;
+            gamma_h = (V_E + V_C + k_hl * obj.T_H) / (V_E + k_hl * obj.T_H);
+        end
+        function gamma_l = gamma_l(obj)            
+            V_E = obj.S_E + obj.C_E;
+            V_C = obj.S_C + obj.C_C;
+            k_hl = obj.V_DH ./ obj.T_H + obj.V_DR ./ obj.T_R + obj.V_DC ./ obj.T_L;
+            gamma_l = (V_E + V_C + k_hl * obj.T_L) / (V_E + k_hl * obj.T_L);
+        end
         function eta = get.eta(obj)
             % Efficiency of the Stirling engine using formula
-            e = obj.e();
-            eta = (obj.T_H - obj.T_L) ./ (obj.T_H + ...
-                (1 - e) .* (obj.T_H - obj.T_L) ...
-                ./ (obj.k -1) ./ log(obj.gamma));
+%             e = obj.e();
+%             eta = (obj.T_H - obj.T_L) ./ (obj.T_H + ...
+%                 (1 - e) .* (obj.T_H - obj.T_L) ...
+%                 ./ (obj.k -1) ./ log(obj.gamma));
+            eta = (obj.T_H * log(obj.gamma_h) - obj.T_L * log(obj.gamma_l))...
+                ./ (obj.T_H * log(obj.gamma_h) + (1 - obj.e) .* ...
+                (obj.T_H - obj.T_L) ./ (obj.k - 1));
         end
         function eta = eta1(obj)
             % Efficiency of the Stirling engine using definition
@@ -67,8 +97,10 @@ classdef StirlingEngine < handle
         end
         function P = get.P(obj)
             % Power of the Stirling engine using the speed of engine
-            P1 = obj.n_g .* Const.R .* (obj.T_H - obj.T_L) .* ...
-                log(obj.gamma) .* obj.s_se;
+%             P1 = obj.n_g .* Const.R .* (obj.T_H - obj.T_L) .* ...
+%                 log(obj.gamma) .* obj.s_se;
+            P1 = obj.n_g .* Const.R .* (obj.T_H * log(obj.gamma_h) ...
+                - obj.T_L * log(obj.gamma_l)) .* obj.s_se;
             if P1 > 0
                 P = P1;
             else
