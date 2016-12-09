@@ -27,21 +27,21 @@ st2.q_m.v = 0.3;
 st2.T.v = 300;
 st2.p.v = 5e5;
 
-sea1 = SEA;
-sea1.n1 = 1;
-sea1.n2 = n_se;
-sea1.order = 'Same';
+sea1 = SEC(n_se,'Parallel');
 sea1.st1_i = st1;
 sea1.st2_i = st2;
 
 sea2 = SEA;
 sea2.n1 = 1;
 sea2.n2 = n_se;
-sea2.order = 'Reverse';
+sea2.order = 'Same';
 sea2.st1_i = st1;
 sea2.st2_i = st2;
 
-sea3 = SEC(n_se,'Parallel');
+sea3 = SEA;
+sea3.n1 = 1;
+sea3.n2 = n_se;
+sea3.order = 'Reverse';
 sea3.st1_i = st1;
 sea3.st2_i = st2;
 
@@ -80,11 +80,13 @@ plot(T1,eta2);
 plot(T1,eta3);
 plot(T1,eta4);
 plot(T1,eta5);
+legend('1', '2', '3', '4', '5');
 
 subplot(1,2,2);
 plot(T1,P1);
 hold on
 plot(T1,P2);
 plot(T1,P3);
+legend('1', '2', '3', '4', '5')
 plot(T1,P4);
 plot(T1,P5)

@@ -1,10 +1,10 @@
-clear;
+clear all;
 % Different kinds of connection form of Stirling engines
 number = 15;
 n_se = 6;
-sea1 = SEA.empty;
+sea1 = SEC.empty;
 sea2 = SEA.empty;
-sea3 = SEC.empty;
+sea3 = SEA.empty;
 sea4 = SEC.empty;
 sea5 = SEC.empty;
 
@@ -33,21 +33,21 @@ st2.q_m.v = 0.3;
 st2.T.v = 300;
 st2.p.v = 5e5;
 
-sea1(k) = SEA;
-sea1(k).n1 = 1;
-sea1(k).n2 = n_se;
-sea1(k).order = 'Same';
+sea1(k) = SEC(n_se,'Parallel');
 sea1(k).st1_i = st1;
 sea1(k).st2_i = st2;
 
 sea2(k) = SEA;
 sea2(k).n1 = 1;
 sea2(k).n2 = n_se;
-sea2(k).order = 'Reverse';
+sea2(k).order = 'Same';
 sea2(k).st1_i = st1;
 sea2(k).st2_i = st2;
 
-sea3(k) = SEC(n_se,'Parallel');
+sea3(k) = SEA;
+sea3(k).n1 = 1;
+sea3(k).n2 = n_se;
+sea3(k).order = 'Reverse';
 sea3(k).st1_i = st1;
 sea3(k).st2_i = st2;
 
@@ -86,6 +86,7 @@ plot(T1,eta2);
 plot(T1,eta3);
 plot(T1,eta4);
 plot(T1,eta5);
+legend('1', '2', '3', '4', '5');
 
 subplot(1,2,2);
 plot(T1,P1);
@@ -93,4 +94,5 @@ hold on
 plot(T1,P2);
 plot(T1,P3);
 plot(T1,P4);
-plot(T1,P5)
+plot(T1,P5);
+legend('1', '2', '3', '4', '5')
